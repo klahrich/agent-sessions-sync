@@ -1,8 +1,8 @@
 """
 Query past Claude Code sessions stored in a Graphon bucket (see graphon_sync.py in this repo).
 
-  python graphon_query.py search  "query" [--project P] [--kind session|subagent|memory] [--keyword] [--limit N] [--context N]
-  python graphon_query.py answer  "question" [--project P] [--kind K] [--instructions "..."]
+  python graphon_query.py search  "query" [--project P] [--agent claude|codex] [--kind session|subagent|memory] [--keyword] [--limit N] [--context N]
+  python graphon_query.py answer  "question" [--project P] [--agent claude|codex] [--kind K] [--instructions "..."]
   python graphon_query.py get     KEY [--start N] [--end N]
   python graphon_query.py list    [--project P] [--limit N]
   python graphon_query.py projects
@@ -67,6 +67,7 @@ def scope(a):
     clauses = []
     if getattr(a, "project", None): clauses.append({"field": "project", "op": "eq", "value": a.project.lower()})
     if getattr(a, "kind", None): clauses.append({"field": "kind", "op": "eq", "value": a.kind})
+    if getattr(a, "agent", None): clauses.append({"field": "agent", "op": "eq", "value": a.agent})
     if clauses: s["filter"] = {"and": clauses}
     return s
 
@@ -158,10 +159,10 @@ def main():
         sys.exit("GRAPHON_API_KEY not set (env var or .env)")
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
-    s = sub.add_parser("search"); s.add_argument("query"); s.add_argument("--project"); s.add_argument("--kind")
+    s = sub.add_parser("search"); s.add_argument("query"); s.add_argument("--project"); s.add_argument("--kind"); s.add_argument("--agent", choices=["claude", "codex"])
     s.add_argument("--keyword", action="store_true"); s.add_argument("--limit", type=int, default=5)
     s.add_argument("--context", type=int, default=300); s.add_argument("--max-chars", type=int, default=2500)
-    s = sub.add_parser("answer"); s.add_argument("query"); s.add_argument("--project"); s.add_argument("--kind")
+    s = sub.add_parser("answer"); s.add_argument("query"); s.add_argument("--project"); s.add_argument("--kind"); s.add_argument("--agent", choices=["claude", "codex"])
     s.add_argument("--instructions")
     s = sub.add_parser("get"); s.add_argument("key"); s.add_argument("--start", type=int); s.add_argument("--end", type=int)
     s = sub.add_parser("list"); s.add_argument("--project"); s.add_argument("--limit", type=int, default=50)

@@ -18,6 +18,17 @@
     "stateFile": "graphon-state.json"
   },
 
+  "codex": {
+    "enabled": true,
+    "sessionsDir": "C:\\Users\\YOU\\.codex\\sessions",
+    "sessionIndex": "C:\\Users\\YOU\\.codex\\session_index.jsonl",
+    "zstd": "C:\\path\\to\\zstd.exe",
+    "gcsPrefix": "codex",
+    "stateFile": "codex-state.json",
+    "include": ["my-project"],
+    "exclude": ["codex-scratch", "_documents-root"]
+  },
+
   "include": [
     "my-project",
     "another-project"

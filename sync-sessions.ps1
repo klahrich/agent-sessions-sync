@@ -79,7 +79,7 @@ if ($unreviewed) { Write-Log "UNREVIEWED (add to include or exclude in sync-conf
 Write-Log "=== done: $($synced.Count) synced, $($failed.Count) failed, $($unreviewed.Count) unreviewed ==="
 
 # prune old logs
-Get-ChildItem $cfg.logDir -Filter 'sync-*.log' |
+Get-ChildItem $cfg.logDir -Filter '*.log' |
     Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-[int]$cfg.logRetentionDays) } |
     Remove-Item -Force -ErrorAction SilentlyContinue
 
@@ -88,6 +88,16 @@ if ($cfg.graphon -and $cfg.graphon.enabled -and -not $DryRun) {
     Write-Log "graphon: running graphon_sync.py (details in graphon-*.log)"
     & $cfg.python -I (Join-Path $PSScriptRoot 'graphon_sync.py') 2>&1 | Select-Object -Last 1 | ForEach-Object { Write-Log "graphon: $_" }
     if ($LASTEXITCODE -ne 0) { Write-Log "FAIL  graphon (exit $LASTEXITCODE)"; $failed += 'graphon' }
+}
+
+# --- Codex sessions (raw to GCS under codex/, Markdown to Graphon) ---
+if ($cfg.codex -and $cfg.codex.enabled -and -not $DryRun) {
+    Write-Log "codex: running codex_sync.py (details in codex-*.log)"
+    $codexOut = @(& $cfg.python -I (Join-Path $PSScriptRoot 'codex_sync.py') 2>&1 | ForEach-Object { "$_" })
+    $codexExit = $LASTEXITCODE
+    $codexOut | Select-Object -Last 1 | ForEach-Object { Write-Log "codex: $_" }
+    if ($codexExit -ne 0) { Write-Log "FAIL  codex (exit $codexExit)"; $failed += 'codex' }
+    $codexOut | Where-Object { $_ -match 'UNREVIEWED codex projects[^:]*:\s*(.+)$' } | ForEach-Object { $unreviewed += "codex: $($Matches[1])" }
 }
 
 if ($failed) {

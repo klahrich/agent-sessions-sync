@@ -20,7 +20,7 @@ Exit:   0 ok, 1 some uploads failed, 2 config/auth problem.
 import argparse, base64, datetime as dt, json, os, re, sys, time, urllib.error, urllib.request
 from pathlib import Path
 
-CONVERTER_VERSION = "1"          # bump to force re-upload of every transcript after changing the converter
+CONVERTER_VERSION = "2"          # bump to force re-upload of every transcript after changing the converter (2: agent=claude metadata)
 TOOL_INPUT_MAX = 400
 TOOL_RESULT_MAX = 600
 
@@ -214,12 +214,12 @@ def fit_key(key):
 
 def collect(project_dir, project):
     for f in sorted(project_dir.glob("*.jsonl")):
-        yield f, fit_key(f"{project}/{f.stem}.md"), "session", {"project": project, "kind": "session", "session": f.stem}
+        yield f, fit_key(f"{project}/{f.stem}.md"), "session", {"project": project, "kind": "session", "session": f.stem, "agent": "claude"}
     for f in sorted(project_dir.glob("*/subagents/*.jsonl")):
         sid = f.parent.parent.name
-        yield f, fit_key(f"{project}/subagents/{f.stem}.md"), "subagent", {"project": project, "kind": "subagent", "session": sid}
+        yield f, fit_key(f"{project}/subagents/{f.stem}.md"), "subagent", {"project": project, "kind": "subagent", "session": sid, "agent": "claude"}
     for f in sorted((project_dir / "memory").glob("*.md")):
-        yield f, fit_key(f"{project}/memory/{f.name}"), "memory", {"project": project, "kind": "memory"}
+        yield f, fit_key(f"{project}/memory/{f.name}"), "memory", {"project": project, "kind": "memory", "agent": "claude"}
 
 
 def main():
@@ -251,7 +251,7 @@ def main():
             continue
         for src, key, kind, meta in collect(d, project):
             st = src.stat()
-            sig = f"{CONVERTER_VERSION if kind != 'memory' else 'm'}|{st.st_size}|{st.st_mtime_ns}"
+            sig = f"{CONVERTER_VERSION if kind != 'memory' else 'm2'}|{st.st_size}|{st.st_mtime_ns}"
             if state.get(key) == sig:
                 skipped += 1; continue
             try:

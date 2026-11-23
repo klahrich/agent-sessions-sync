@@ -13,3 +13,4 @@ sync-config.json
 
 # one-off GCP org-policy overrides
 gcp-setup/
+codex-state.json
