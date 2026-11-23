@@ -36,3 +36,7 @@ Logs are written to `logs/`. Failures and unreviewed projects trigger a Windows 
 - **Upload key length:** Graphon currently rejects object keys longer than 75 bytes with `404 Unknown storage path`. `graphon_sync.py` keeps keys within that limit.
 - **What the markdown keeps:** user messages, Claude's replies, one line per tool call and short previews of tool output. It drops Claude's thinking blocks and images. Increase `CONVERTER_VERSION` after changing the converter to re-upload everything.
 - **What's sensitive:** transcripts can contain anything that appeared in a session, including secrets. Keep both buckets private.
+
+## License
+
+Public domain, under [The Unlicense](LICENSE). Use it however you like.
