@@ -1,0 +1,15 @@
+# secrets
+.env
+*.key.json
+sa-key.json
+
+# local run state / logs
+logs/
+graphon-state.json
+__pycache__/
+
+# personal config (copy sync-config.example.json)
+sync-config.json
+
+# one-off GCP org-policy overrides
+gcp-setup/

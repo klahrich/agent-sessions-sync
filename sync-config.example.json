@@ -1,0 +1,30 @@
+{
+  "bucket": "gs://YOUR-GCS-BUCKET",
+  "projectsDir": "C:\\Users\\YOU\\.claude\\projects",
+  "stripPrefix": "C--Users-YOU-Documents-",
+  "gcloud": "C:\\Users\\YOU\\AppData\\Local\\Google\\Cloud SDK\\google-cloud-sdk\\bin\\gcloud.cmd",
+  "python": "C:\\Users\\YOU\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe",
+  "cloudsdkConfig": "C:\\Users\\YOU\\.config\\session-sync\\gcloud",
+  "logDir": "C:\\Users\\YOU\\Documents\\agent-sessions-sync\\logs",
+  "logRetentionDays": 60,
+
+  "graphon": {
+    "enabled": true,
+    "storageOrigin": "https://storage.graphon.sh",
+    "workspaceId": "wsp...",
+    "bucketName": "claude-sessions",
+    "bucketId": "bkt...",
+    "envFile": ".env",
+    "stateFile": "graphon-state.json"
+  },
+
+  "include": [
+    "my-project",
+    "another-project"
+  ],
+
+  "exclude": [
+    "_documents-root",
+    "scratch-project"
+  ]
+}
